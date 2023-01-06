@@ -7,30 +7,78 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   
   <title>Frontend Mentor | Todo app</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css" />
 
   <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
 </head>
 <body>
-
-  Todo
-
-  <!-- Add dynamic number --> items left
-
+  <header class="header">
+    <h1 class="logo">
+      <a href="#">TODO</a>
+    </h1>
+    <h2 class="a11y-hidden">TODO 추가</h2>
+    <fieldset>
+      <legend>추가 입력</legend>
+      <div class="create-inner">
+        <div class="create-group">
+          <label for="check" class="a11y-hidden">추가</label>
+          <input type="checkbox" id="check"/>
+          <label for="create" class="create-label a11y-hidden">todo 추가란</label>
+          <input type="text" id="create" class="create-input" placeholder="Create a new todo.." />
+        </div>
+      </div>
+    </fieldset>
+    </h2>
+    <button type="button" class="bright-toggle-button">밝기 토글 버튼</button>
+  </header>
+  <main class="main">
+    <section class="todo-list">
+      <ul class="todo-list">
+        <li>
+          <label for="check" class="a11y-hidden">추가</label>
+          <input type="checkbox" id="check" checked="true"/>
+          <label for="update" class="update-label a11y-hidden">todo 추가란</label>
+          <input type="text" id="update" class="update-input" value="자바스크립트 복습" /> 
+          <button class="is-delete"></button>
+        </li>
+        <li>
+          <label for="check" class="a11y-hidden">추가</label>
+          <input type="checkbox" id="check" checked="true"/>
+          <label for="update" class="update-label a11y-hidden">todo 추가란</label>
+          <input type="text" id="update" class="update-input" value="야무쌤 강의 듣기" /> 
+          <button class="is-delete"></button>
+        </li>
+        <li>
+          <label for="check" class="a11y-hidden">추가</label>
+          <input type="checkbox" id="check" checked="true"/>
+          <label for="update" class="update-label a11y-hidden">todo 추가란</label>
+          <input type="text" id="update" class="update-input" value="개인 프로젝트" />
+          <button class="is-delete"></button>
+        </li>
+      </ul>
+      <div class="todo-list-handling" aria-hidden="true">
+        <span class="list-left-number">3 items left</span>
+          <button class="btn-all">All</button>
+          <button class="btn-active">Active</button>
+          <button class="btn-completed">Completed</button>
+          <button class="btn-close-completed">Close Completed</button>
+      </div>
+    </section>
+  </main>
+  <!-- Add dynamic number items left -->
+<!-- 
   All
   Active 
   Completed
 
   Clear Completed
 
-  Drag and drop to reorder list
+  Drag and drop to reorder list -->
 
-  <div class="attribution">
+  <!-- <div class="attribution">
     Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
     Coded by <a href="#">Your Name Here</a>.
-  </div>
+  </div> -->
 </body>
 </html>
