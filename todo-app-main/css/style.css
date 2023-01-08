@@ -3,9 +3,8 @@
 @import url('./theme.css');
 
 header {
-  background: url("../images/bg-desktop-light.jpg") no-repeat 0 0 / 100% 100%;
-  height: 21.4285rem;
-  flex: 1 1 auto; 
+  background: url("../images/bg-desktop-light.jpg") no-repeat center / auto 100%;
+  flex: 0 1 21.9rem;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -13,7 +12,7 @@ header {
 }
 
 main {
-  flex: 10 1 auto;
+  flex: 1 1 auto;
   background-color: lightcyan;
 }
 
