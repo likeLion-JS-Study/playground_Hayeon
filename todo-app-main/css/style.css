@@ -2,18 +2,13 @@
 @import url('./base.css');
 @import url('./theme.css');
 
-header {
+.header {
   background: url("../images/bg-desktop-light.jpg") no-repeat center / auto 100%;
   flex: 0 1 21.9rem;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   position: relative;
-}
-
-main {
-  flex: 1 1 auto;
-  background-color: lightcyan;
 }
 
 .logo {
@@ -27,19 +22,18 @@ main {
 }
 
 .bright-toggle-button {
-  /* background-color: green; */
   position: absolute;
   width: 50px;
   height: 50px;
   text-indent: -9999px;
   overflow: hidden;
-  top: 10.5rem;
+  top: 7rem;
   left: calc(50vw + 16.0rem);
   background: url("../images/icon-moon.svg") no-repeat 50% 50% / 50%;
   border: 0;
 }
 
-.create-group {
+.create-group, .todo-list li {
   background-color: #fff;
   width: 38.571rem;
   height: 3.571428rem;
@@ -47,26 +41,30 @@ main {
   padding-left: 1.071264rem;
   display: flex;
   gap: 1.071264rem;
-  border-radius: 5px;
 }
 
-.create-check {
+.create-group {
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px #565656;
+}
+
+.create-check, .update-check {
   align-self: center;
   appearance: none;
   -webkit-appearance: none;
-  height: 2.14285rem;
-  width: 2.14285rem;
+  height: 1.6rem;
+  width: 1.6rem;
   border: 1px solid #cdcdcd;
   border-radius: 50%;
   cursor: pointer;
   overflow: hidden;
 }
 
-.create-check:hover {
+.create-check:hover, .update-check:hover{
   content: '';
   display: block;
-  height: 2.14285rem;
-  width: 2.14285rem;
+  height: 1.6rem;
+  width: 1.6rem;
   background: url("../images/icon-check.svg") no-repeat 50% 50% / 50%, 
   #212121 linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 }
@@ -77,4 +75,99 @@ main {
   outline: none;
   text-indent: 10px;
   border-radius: 10px;
+}
+
+.main {
+  flex: 1 1 auto;
+}
+
+.todo {
+  position: absolute;
+  top: 15.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38.571rem;
+  /* background-color: orangered; */
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 1px 1px 3px #565656;
+}
+
+.todo-list li{
+  border-bottom: 1px solid #cdcdcd;
+  position: relative;
+}
+
+.update-input {
+  flex: 1 1 auto;
+  border: 0;
+  text-indent: 10px;
+}
+
+.is-delete {
+  /* flex: 0 1 1px; */
+  flex: 0 1 4rem;
+  border: 0;
+  background-color: transparent;
+}
+
+.is-delete::before {
+  content: '';
+  width: 1px;
+  height: 50%;
+  background-color: #212121;
+  position: absolute;
+  top: 30%;
+  transform: translateX(-50%);
+  display: inline-block;
+  transform: rotate(-45deg);
+}
+
+.is-delete::after {
+  content: '';
+  width: 1px;
+  height: 50%;
+  background-color: #212121;
+  position: absolute;
+  display: inline-block;
+  position: absolute;
+  top: 30%;
+  transform: translateX(-50%);
+  transform: rotate(45deg)
+}
+
+.todo-list-handling {
+  background-color: #fff;
+  width: 38.571rem;
+  height: 3.571428rem;
+  padding: 1.071264rem;
+  display: flex;
+  flex-direction: row nowrap;
+  justify-content: space-between;
+}
+
+.list-left-number {
+  flex: 1 1 18rem;
+}
+
+.todo-list-handling > button {
+  border: 0;
+  background-color: #fff;
+}
+
+.btn-all {
+  flex: 0 1 auto;
+}
+
+.btn-active {
+  flex: 0 1 auto;
+}
+
+.btn-completed {
+  flex: 0 1 auto;
+}
+
+.btn-close-completed {
+  flex: 1 1 18rem;
+  text-align: end;
 }
