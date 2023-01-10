@@ -31,6 +31,7 @@
   left: calc(50vw + 16.0rem);
   background: url("../images/icon-moon.svg") no-repeat 50% 50% / 50%;
   border: 0;
+  cursor: pointer;
 }
 
 .create-group, .todo-list li {
