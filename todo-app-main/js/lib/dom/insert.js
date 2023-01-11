@@ -1,0 +1,31 @@
+function insertBefore(node, text) {
+  if (typeof node === 'string') node = getNode(node);
+
+  if (node.nodeType !== document.ELEMENT_NODE) {
+    typeError('insertBefore함수의 첫번째 인자는 ELEMENT 노드여야 합니다.');
+  }
+
+  node.insertAdjacentHTML('beforebegin', text);
+}
+
+function insertFirst(node, text) {
+  if (typeof node === 'string') node = getNode(node);
+  if (node.nodeType !== document.ELEMENT_NODE) typeError('insertFirst함수의 첫번째 인자는 ELEMENT 노드여야 합니다.');
+  node.insertAdjacentHTML('afterbegin', text);
+}
+
+function insertLast(node, text) {
+  if (typeof node === 'string') node = getNode(node);
+  if (node.nodeType !== document.ELEMENT_NODE) {
+    refError('insertLast함수의 첫번째 인자는 ELEMENT 노드여야 합니다.');
+  }
+  node.insertAdjacentHTML('beforeend', text);
+}
+
+function insertAfter(node, text) {
+  if (typeof node === 'string') node = getNode(node);
+  if (node.nodeType !== document.ELEMENT_NODE) {
+    refError('insertAfter함수의 첫번째 인자는 ELEMENT 노드여야 합니다.');
+  }
+  node.insertAdjacentHTML('afterend', text);
+}
