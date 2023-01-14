@@ -172,3 +172,25 @@
   flex: 1 1 18rem;
   text-align: end;
 }
+
+.alert{
+  padding: 2rem;
+  position: fixed;
+  font-weight: bold;
+  z-index: 1;
+  color: white;
+  transition: all .3s;
+}
+
+.alert-error{
+  border-radius: 0 1rem 1rem 0;
+  background: var(--bright-blue) linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+  box-shadow: 3px 3px 10px #454545;
+  left: 0;
+  top: 0;
+  transform: translateX(-100%);
+}
+
+.alert.is-active{
+  transform: translateX(0);
+}
