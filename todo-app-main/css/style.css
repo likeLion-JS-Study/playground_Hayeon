@@ -168,10 +168,25 @@
   flex: 0 1 auto;
 }
 
-.btn-close-completed {
+.btn-clear-completed {
   flex: 1 1 18rem;
   text-align: end;
 }
+
+.btn-all[data-is-active='true'] {
+  color: var(--bright-blue);
+}
+
+.btn-active[data-is-active='true'] {
+  color: var(--bright-blue);
+}
+
+.btn-completed[data-is-active='true'] {
+  color: var(--bright-blue);
+}
+
+
+
 
 .alert{
   padding: 2rem;
