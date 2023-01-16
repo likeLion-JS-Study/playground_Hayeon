@@ -61,7 +61,7 @@
   overflow: hidden;
 }
 
-.create-check:hover, .update-check:hover{
+.create-check:hover, .update-check:hover, .update-check[data-checked='true']{
   content: '';
   display: block;
   height: 1.6rem;
@@ -69,6 +69,13 @@
   background: url("../images/icon-check.svg") no-repeat 50% 50% / 50%, 
   #212121 linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 }
+
+.update-check[data-checked='false'] {
+}
+
+/* .update-check:checked {
+  text-decoration: line-through;
+} */
 
 .create-input {
   flex: 1 1 auto;
@@ -184,9 +191,6 @@
 .btn-completed[data-is-active='true'] {
   color: var(--bright-blue);
 }
-
-
-
 
 .alert{
   padding: 2rem;

@@ -1,12 +1,13 @@
-import { attr, css, getNode, getNodes, insertAfter, insertFirst, insertLast, showAlert } from './lib/dom/index.js';
+import { clearContents, attr, css, getNode, getNodes, insertAfter, insertFirst, insertLast, showAlert } from './lib/dom/index.js';
+import { memo } from './lib/utils/memo.js';
 
-const header = getNode('.header');
-const main = getNode('.main');
-const brightToggleBtn = getNode('.bright-toggle-button');
-const createInput = getNode('.create-input');
-const createCheckBox = getNode('.create-check');
-const toDoList = getNode('.todo-list');
-const todoListHandling = getNode('todo-list-handling');
+memo('@header', () => getNode('.header'));
+memo('@main', () => getNode('.main'));
+memo('@brightToggleBtn', () => getNode('.bright-toggle-button'));
+memo('@createInput', () => getNode('.create-input'));
+memo('@createCheckBox', () => getNode('.create-check'));
+memo('@toDoList', () => getNode('.todo-list'));
+// memo('@todoListHandling', () => getNode('todo-list-handling'));
 const useState = (val) => { // 클로져 생성
   let state = val;
   function read() {
@@ -24,45 +25,67 @@ function clearText(target) {
   target.value = '';
 }
 
-brightToggleBtn.addEventListener('click', convertBrightTheme);
+memo('@brightToggleBtn').addEventListener('click', convertBrightTheme);
 
-createInput.addEventListener('keydown', e => {
+memo('@createInput').addEventListener('keydown', e => {
   if (e.keyCode !== 13) return ;
   insertTodo();
 });
-createCheckBox.addEventListener('change', insertTodo);
+memo('@createCheckBox').addEventListener('change', insertTodo);
 // 이벤트 위임
-toDoList.addEventListener('click', function(e) {
+memo('@toDoList').addEventListener('click', function(e) {
   // 꼭 필요한 경우를 제외하곤 버블링을 막지 마세요!
   // e.stopPropagation();
-  if (e.target.tagName !== 'BUTTON') return ;
+  if (attr(e.target, 'class') === 'update-check')
+    completeTodo(e.target);
+  // if (attr(e.target, 'class') === 'update-input')
+  if (e.target.tagName === 'BUTTON')
+    deleteTodo(e.target.closest('li'));
   // e.target.closest('li').remove();
-  deleteTodo(e.target.closest('li'));
 })
 
-getNode('.todo-list-handling')?.addEventListener('click', function(e) {
-  
+getNode('.todo-list-handling').addEventListener('click', function(e) {
+  alert('hi');
 })
+
+function completeTodo(target) {
+  if (attr(target, 'data-checked') === 'false') {
+    attr(target, 'data-checked', 'true');
+  }
+  else {
+    attr(target, 'data-checked', 'false');
+  }
+  updateTodo(target);
+  console.log(readTodoList());
+}
+
+function updateTodo(target) {
+  // 리뷰 받고 싶은 곳 - 3
+  // 직접 수정, 다른 좋은 방법이? 
+  readTodoList().forEach(item => {
+    if (item.content === target.closest('li').children[3].value) {
+      item.type = (item.type === 'active') ? 'completed' : 'active';
+    }
+  });
+}
 
 function convertBrightTheme() {
   console.log(attr('.main', 'class'));
   if (!attr('.main', 'class').includes('dark')) {
-   main.classList.toggle('dark');
-   header.style.background = 'url("../images/bg-desktop-dark.jpg") no-repeat center / auto 100%';
-   main.style.background = '#212121';
-   brightToggleBtn.style.background = 'url("../images/icon-sun.svg") no-repeat 50% 50% / 50%'; 
+    memo('@header').style.background = 'url("../images/bg-desktop-dark.jpg") no-repeat center / auto 100%';
+    memo('@main').style.background = '#212121';
+    memo('@brightToggleBtn').style.background = 'url("../images/icon-sun.svg") no-repeat 50% 50% / 50%'; 
   }
   else {
-   main.classList.toggle('dark');
-   header.style.background = 'url("../images/bg-desktop-light.jpg") no-repeat center / auto 100%';
-   main.style.background = '#fff';
-   brightToggleBtn.style.background = 'url("../images/icon-moon.svg") no-repeat 50% 50% / 50%'; 
+    memo('@header').style.background = 'url("../images/bg-desktop-light.jpg") no-repeat center / auto 100%';
+    memo('@main').style.background = '#fff';
+    memo('@brightToggleBtn').style.background = 'url("../images/icon-moon.svg") no-repeat 50% 50% / 50%'; 
   }
+  memo('@main').classList.toggle('dark');
 }
 
 function deleteTodo(target) { // 여기 부분 리뷰 받고싶음 - 2
   const newTodoList = [...readTodoList().filter(item => (item.content !== target.children[3].value))]; // input value로 비교하여 같은 값을 뺴는데 count -1만 하기 때문에 해결방안으로 중복값 입력을 막음.
-  console.log(newTodoList);
   writeTodoList(newTodoList);
   localStorage.setItem('todoList', JSON.stringify(readTodoList()));
   countDownTodoNumber();
@@ -70,30 +93,30 @@ function deleteTodo(target) { // 여기 부분 리뷰 받고싶음 - 2
 }
 
 function insertTodo() { // 여기 부분 리뷰 받고싶음 - 1
-  console.log(createInput.value);
-  if (!createInput.value) {
+  console.log(memo('@createInput').value);
+  if (!memo('@createInput').value) {
     showAlert('.alert-error', '할일을 입력해주세요.', 2000);
     return;
   }
   let duplicatedContentFlag = false;
   readTodoList().forEach(item => {
-    if (item.content === createInput.value) {
+    if (item.content === memo('@createInput').value) {
       duplicatedContentFlag = true;
     }
   })
   if (duplicatedContentFlag) {
     showAlert('.alert-error', '중복된 값을 넣지말아주세요.', 2000);
-    clearText(createInput);
+    clearText(memo('@createInput'));
     return ;
   }
   const newTodoList = [...readTodoList()]; // 전체를 지우고 다시 쓰는 방식, 다른 더 좋은 방법이 있을까요?
   newTodoList.push({
     type: 'active',
-    content: createInput.value
+    content: memo('@createInput').value
   });
   writeTodoList(newTodoList);
   localStorage.setItem('todoList', JSON.stringify(readTodoList()));
-  clearText(createInput);
+  clearText(memo('@createInput'));
   countUpTodoNumber();
   refreshTodoListFromLocalStorage(getLoadedLocalStorageTodoList);
 }
@@ -126,19 +149,19 @@ function refreshTodoListFromLocalStorage(callback) {
     let template = `
       <li>
         <label for="check" class="a11y-hidden">추가</label>
-        <input type="checkbox" class="update-check" id="check" checked="true"/>
+        <input type="checkbox" class="update-check" id="check" data-checked='false'/>
         <label for="update" class="update-label a11y-hidden">todo 추가란</label>
-        <input type="text" id="update" class="update-input" value="${item.content}"/>
+        <input type="text" id="update" class="update-input" readOnly value="${item.content}"/>
         <button class="is-delete"></button>
       </li>
     `;
-    insertFirst(toDoList, template);
+    insertFirst(memo('@toDoList'), template);
   })
 }
 
 function refreshTodoListHandling() {
   getNode('.todo-list-handling')?.remove();
-  insertAfter(toDoList, `
+  insertAfter(memo('@toDoList'), `
     <div class="todo-list-handling" aria-hidden="true"> 
       <span class="list-left-number">${readTodoNum()} items left</span>
       <button class="btn-all" data-is-active='true'>All</button>
