@@ -180,15 +180,15 @@
   text-align: end;
 }
 
-.btn-all[data-is-active='true'] {
+.btn-all[data-active='true'] {
   color: var(--bright-blue);
 }
 
-.btn-active[data-is-active='true'] {
+.btn-active[data-active='true'] {
   color: var(--bright-blue);
 }
 
-.btn-completed[data-is-active='true'] {
+.btn-completed[data-active='true'] {
   color: var(--bright-blue);
 }
 
