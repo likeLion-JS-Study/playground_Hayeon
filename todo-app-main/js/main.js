@@ -44,9 +44,9 @@ memo('@toDoList').addEventListener('click', function(e) {
   // e.target.closest('li').remove();
 })
 
-getNode('.todo-list-handling').addEventListener('click', function(e) {
-  alert('hi');
-})
+// getNode('.todo-list-handling')?.addEventListener('click', function(e) {
+//   alert('hi');
+// })
 
 function completeTodo(target) {
   if (attr(target, 'data-checked') === 'false') {
@@ -164,12 +164,63 @@ function refreshTodoListHandling() {
   insertAfter(memo('@toDoList'), `
     <div class="todo-list-handling" aria-hidden="true"> 
       <span class="list-left-number">${readTodoNum()} items left</span>
-      <button class="btn-all" data-is-active='true'>All</button>
-      <button class="btn-active" data-is-active='false'>Active</button>
-      <button class="btn-completed" data-is-active='false'>Completed</button>
-      <button class="btn-clear-completed" data-is-active='false'>clear Completed</button>
+      <button class="btn-all" data-active='true'>All</button>
+      <button class="btn-active" data-active='false'>Active</button>
+      <button class="btn-completed" data-active='false'>Completed</button>
+      <button class="btn-clear-completed" data-active='false'>clear Completed</button>
     </div>
   `);
-  if (readTodoNum() === 0)
-   getNode('.todo-list-handling').remove();
+  if (readTodoNum() === 0) {
+    getNode('.todo-list-handling').remove();
+    return ;
+  }
+  // addEventListener 이때 넣어야함
+  // 이벤트 위임
+  getNode('.todo-list-handling').addEventListener('click', todoListMenuHandling);
 }
+
+function todoListMenuHandling(e) {
+  // 꼭 필요한 경우를 제외하곤 버블링을 막지 마세요!
+  // e.stopPropagation();
+  const btnAll = getNode('.btn-all');
+  const btnActive = getNode('.btn-active');
+  const btnCompleted = getNode('.btn-completed');
+  if (attr(e.target, 'class') === 'btn-all') {
+    changeToAll({btnAll, btnActive, btnCompleted});
+  }
+  else if (attr(e.target, 'class') === 'btn-active') {
+    changeToActive({btnAll, btnActive, btnCompleted});
+  }
+  else if (attr(e.target, 'class') === 'btn-completed') {
+    changeToCompleted({btnAll, btnActive, btnCompleted});
+  }
+  else if (attr(e.target, 'class') === 'btn-clear-completed') {
+    changeToAll({btnAll, btnActive, btnCompleted});
+  }
+  // if (attr(e.target, 'class') === 'update-input')
+  // if (e.target.tagName === 'BUTTON')
+  //   deleteTodo(e.target.closest('li'));
+  // e.target.closest('li').remove();
+}
+
+/* -------------------------------------------------------------------------- */
+/*                             change data status                             */
+/* -------------------------------------------------------------------------- */
+function changeToAll({btnAll, btnActive, btnCompleted}) {
+  attr(btnAll, 'data-active', 'true');
+  attr(btnActive, 'data-active', 'false');
+  attr(btnCompleted, 'data-active', 'false'); 
+}
+
+function changeToActive({btnAll, btnActive, btnCompleted}) {
+  attr(btnAll, 'data-active', 'false');
+  attr(btnActive, 'data-active', 'true');
+  attr(btnCompleted, 'data-active', 'false');
+}
+
+function changeToCompleted({btnAll, btnActive, btnCompleted}) {
+  attr(btnAll, 'data-active', 'false');
+  attr(btnActive, 'data-active', 'false');
+  attr(btnCompleted, 'data-active', 'true');
+}
+
