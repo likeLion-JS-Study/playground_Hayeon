@@ -25,7 +25,6 @@
   position: absolute;
   width: 50px;
   height: 50px;
-  text-indent: -9999px;
   overflow: hidden;
   top: 7rem;
   left: calc(50vw + 16.0rem);
@@ -70,12 +69,10 @@
   #212121 linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 }
 
-.update-check[data-checked='false'] {
-}
-
-/* .update-check:checked {
+.update-check[data-checked='true'] ~ .update-input {
+  color: #565656;
   text-decoration: line-through;
-} */
+}
 
 .create-input {
   flex: 1 1 auto;
@@ -95,7 +92,6 @@
   left: 50%;
   transform: translateX(-50%);
   width: 38.571rem;
-  /* background-color: orangered; */
   border-radius: 5px;
   overflow: hidden;
   box-shadow: 1px 1px 3px #565656;
@@ -113,7 +109,6 @@
 }
 
 .is-delete {
-  /* flex: 0 1 1px; */
   flex: 0 1 4rem;
   border: 0;
   background-color: transparent;
@@ -206,11 +201,60 @@
   border-radius: 0 1rem 1rem 0;
   background: var(--bright-blue) linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
   box-shadow: 3px 3px 10px #454545;
-  left: 0;
+  left: -10px;
   top: 0;
   transform: translateX(-100%);
 }
 
 .alert.is-active{
   transform: translateX(0);
+}
+
+@media (max-width: 769px) {
+  .logo {
+    width: 19.285rem;
+  }
+
+  .bright-toggle-button {
+    left: calc(50vw + 7rem);
+  }
+
+  .create-group, .todo-list li {
+    width: 19.285rem;
+  }
+
+  .todo {
+    width: 19.285rem;
+  }
+
+  .todo-list-handling {
+    width: 19.285rem;
+  }
+
+  .list-left-number {
+    font-size: 0.7rem;
+    text-align: center;
+    margin: auto 0;
+  }
+
+  .btn-all {
+    font-size: 0.2rem;
+  }
+  
+  .btn-active {
+    font-size: 0.2rem;
+  }
+  
+  .btn-completed {
+    font-size: 0.2rem;
+  }
+  
+  .btn-clear-completed {
+    font-size: 0.2rem;
+    text-align: center;
+  }
+
+  .update-check, .update-check[data-checked='true'] {
+    width: 2rem;
+  }
 }
