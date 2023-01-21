@@ -2,13 +2,12 @@ import { clearContents, attr, css, getNode, getNodes, insertAfter, insertFirst, 
 import { memo } from './lib/utils/memo.js';
 
 // 데이터의 unique한 값을 content로 세워 진행함.
-memo('@header', () => getNode('.header'));
-memo('@main', () => getNode('.main'));
-memo('@brightToggleBtn', () => getNode('.bright-toggle-button'));
-memo('@createInput', () => getNode('.create-input'));
-memo('@createCheckBox', () => getNode('.create-check'));
-memo('@toDoList', () => getNode('.todo-list'));
-// memo('@todoListHandling', () => getNode('todo-list-handling'));
+const header = getNode('.header');
+const main = getNode('.main');
+const brightToggleBtn = getNode('.bright-toggle-button');
+const createInput = getNode('.create-input');
+const createCheckBox = getNode('.create-check');
+const toDoList = getNode('.todo-list');
 const useState = (val) => { // 클로져 생성
   let state = val;
   function read() {
@@ -21,29 +20,28 @@ const useState = (val) => { // 클로져 생성
 }
 const [readTodoNum, writeTodoNum] = useState(0);
 const [readTodoList, writeTodoList] = useState([]);
+const [readRenderingTodoList, writeRenderingTodoList] = useState([]);
 const [readSeekState, writeSeekState] = useState('all');
 
 function clearText(target) {
   target.value = '';
 }
 
-memo('@brightToggleBtn').addEventListener('click', convertBrightTheme);
+brightToggleBtn.addEventListener('click', convertBrightTheme);
 
-memo('@createInput').addEventListener('keydown', e => {
+createInput.addEventListener('keydown', e => {
   if (e.keyCode !== 13) return ;
   insertTodo();
 });
-memo('@createCheckBox').addEventListener('change', insertTodo);
+createCheckBox.addEventListener('change', insertTodo);
 // 이벤트 위임
-memo('@toDoList').addEventListener('click', function(e) {
+toDoList.addEventListener('click', function(e) {
   // 꼭 필요한 경우를 제외하곤 버블링을 막지 마세요!
   // e.stopPropagation();
   if (attr(e.target, 'class') === 'update-check')
     updateTodo(e.target);
-  // if (attr(e.target, 'class') === 'update-input')
   if (e.target.tagName === 'BUTTON')
     deleteTodo(e.target.closest('li'));
-  // e.target.closest('li').remove();
 })
 
 /* -------------------------------------------------------------------------- */
@@ -51,16 +49,16 @@ memo('@toDoList').addEventListener('click', function(e) {
 /* -------------------------------------------------------------------------- */
 function convertBrightTheme() {
   if (!attr('.main', 'class').includes('dark')) {
-    memo('@header').style.background = 'url("../images/bg-desktop-dark.jpg") no-repeat center / auto 100%';
-    memo('@main').style.background = '#212121';
-    memo('@brightToggleBtn').style.background = 'url("../images/icon-sun.svg") no-repeat 50% 50% / 50%'; 
+    header.style.background = 'url("../images/bg-desktop-dark.jpg") no-repeat center / auto 100%';
+    main.style.background = '#212121';
+    brightToggleBtn.style.background = 'url("../images/icon-sun.svg") no-repeat 50% 50% / 50%'; 
   }
   else {
-    memo('@header').style.background = 'url("../images/bg-desktop-light.jpg") no-repeat center / auto 100%';
-    memo('@main').style.background = '#fff';
-    memo('@brightToggleBtn').style.background = 'url("../images/icon-moon.svg") no-repeat 50% 50% / 50%'; 
+    header.style.background = 'url("../images/bg-desktop-light.jpg") no-repeat center / auto 100%';
+    main.style.background = '#fff';
+    brightToggleBtn.style.background = 'url("../images/icon-moon.svg") no-repeat 50% 50% / 50%'; 
   }
-  memo('@main').classList.toggle('dark');
+  main.classList.toggle('dark');
 }
 /* -------------------------------------------------------------------------- */
 
@@ -68,30 +66,30 @@ function convertBrightTheme() {
 /*                           create, update, delete                           */
 /* -------------------------------------------------------------------------- */
 function insertTodo() { // 여기 부분 리뷰 받고싶음 - 1
-  if (!memo('@createInput').value) {
+  if (!createInput.value) {
     showAlert('.alert-error', '할일을 입력해주세요.', 2000);
     return;
   }
   let duplicatedContentFlag = false;
   readTodoList().forEach(item => {
-    if (item.content === memo('@createInput').value) {
+    if (item.content === createInput.value) {
       duplicatedContentFlag = true;
     }
   })
   if (duplicatedContentFlag) {
     showAlert('.alert-error', '중복된 값을 넣지말아주세요.', 2000);
-    clearText(memo('@createInput'));
+    clearText(createInput);
     return ;
   }
   const newTodoList = [...readTodoList()]; // 전체를 지우고 다시 쓰는 방식, 다른 더 좋은 방법이 있을까요?
   newTodoList.push({
     type: 'active',
-    content: memo('@createInput').value
+    content: createInput.value
   });
   writeTodoList(newTodoList);
   localStorage.setItem('todoList', JSON.stringify(readTodoList()));
-  clearText(memo('@createInput'));
-  countUpTodoNumber();
+  clearText(createInput);
+  // countUpTodoNumber();
   refreshTodoListFromLocalStorage();
 }
 
@@ -99,55 +97,21 @@ function deleteTodo(target) { // 여기 부분 리뷰 받고싶음 - 2
   const newTodoList = [...readTodoList().filter(item => (item.content !== target.children[3].value))]; // input value로 비교하여 같은 값을 뺴는데 count -1만 하기 때문에 해결방안으로 중복값 입력을 막음.
   writeTodoList(newTodoList);
   localStorage.setItem('todoList', JSON.stringify(readTodoList()));
-  countDownTodoNumber();
+  // countDownTodoNumber();
   refreshTodoListFromLocalStorage();
 }
 
 function updateTodo(target) { // 리뷰 받고 싶은 곳 - 3
-  // changeTodoState(target);
   const newTodoList = readTodoList().map(item => {
-    if (item.content === target.closest('li').children[3].value) {
+    if (item.content === target.closest('li').children[3].value)
       return (item.type === 'active') ? {type: 'completed', content: item.content} : {type: 'active', content: item.content};
-    }
     return item;
   });
   writeTodoList(newTodoList);
   localStorage.setItem('todoList', JSON.stringify(readTodoList()));
   refreshTodoListFromLocalStorage();
 }
-
-// function changeTodoState(target) {
-//   if (attr(target, 'data-checked') === 'false') {
-//     attr(target, 'data-checked', 'true');
-//   }
-//   else {
-//     attr(target, 'data-checked', 'false');
-//   }
-// }
 /* -------------------------------------------------------------------------- */
-
-function countUpTodoNumber() {
-  writeTodoNum(readTodoNum() + 1);
-}
-
-function countDownTodoNumber() {
-  if (readTodoNum() === 0) return ;
-  writeTodoNum(readTodoNum() - 1);
-}
-
-// 여기서 조싸뿌면 되겠다.
-function getLoadedLocalStorageTodoList() {
-  const allTodoListArr = localStorage.getItem('todoList');
-  if (allTodoListArr === null) return ;
-  const parsedTodoList = JSON.parse(allTodoListArr);
-  if (readSeekState() === 'active') {
-    parsedTodoList.filter(item => item.type !== 'active');
-  }
-  else if (readSeekState() === 'completed') {
-    parsedTodoList.filter(item => item.type !== 'comepleted');
-  }
-  return parsedTodoList;
-}
 
 /* -------------------------------------------------------------------------- */
 /*                    rendering todoList from localStorage                    */
@@ -155,12 +119,28 @@ function getLoadedLocalStorageTodoList() {
 
 /* ----------------------------- todoList datas ----------------------------- */
 function refreshTodoListFromLocalStorage() {
+  renderTodoList();
+  renderTodoListMenuHandling();
+}
+
+function getLoadedLocalStorageTodoList() {
+  const allTodoListArr = localStorage.getItem('todoList');
+  if (allTodoListArr === null) return ;
+  const parsedTodoList = JSON.parse(allTodoListArr);
+  let retTodoList = [];
+  if (readSeekState() === 'all')
+    retTodoList = [...parsedTodoList];
+  else if (readSeekState() === 'active')
+    retTodoList = [...parsedTodoList.filter(item => item.type === 'active')];
+  else if (readSeekState() === 'completed')
+    retTodoList = [...parsedTodoList.filter(item => item.type === 'completed')];
+  writeTodoNum(retTodoList.length);
+  return retTodoList;
+}
+
+
+function renderTodoList() {
   const parsedTodListData = getLoadedLocalStorageTodoList();
-  if (!parsedTodListData) {
-    todoListHandling?.remove();
-    return ;
-  }
-  refreshTodoListMenuHandling();
   getNodes('.todo-list > li').forEach(item => {item.remove();});
   parsedTodListData.forEach((item, idx) => {
     let template = `
@@ -172,15 +152,14 @@ function refreshTodoListFromLocalStorage() {
         <button class="is-delete"></button>
       </li>
     `;
-    ;
-    insertFirst(memo('@toDoList'), template);
+    insertFirst(toDoList, template);
   })
 }
 
 /* ------------------------------ todoList menu ----------------------------- */
-function refreshTodoListMenuHandling() {
+function renderTodoListMenuHandling() {
   getNode('.todo-list-handling')?.remove();
-  insertAfter(memo('@toDoList'), `
+  insertAfter(toDoList, `
     <div class="todo-list-handling" aria-hidden="true"> 
       <span class="list-left-number">${readTodoNum()} items left</span>
       <button class="btn-all" data-active='${readSeekState() === 'all'}'>All</button>
@@ -189,11 +168,6 @@ function refreshTodoListMenuHandling() {
       <button class="btn-clear-completed" data-active='false'>clear Completed</button>
     </div>
   `);
-  if (readTodoNum() === 0) {
-    getNode('.todo-list-handling').remove();
-    return ;
-  }
-  // addEventListener 이때 넣어야함
   // 이벤트 위임
   getNode('.todo-list-handling').addEventListener('click', todoListMenuHandling);
 }
@@ -205,26 +179,18 @@ function todoListMenuHandling(e) {
   const btnAll = getNode('.btn-all');
   const btnActive = getNode('.btn-active');
   const btnCompleted = getNode('.btn-completed');
-  if (attr(e.target, 'class') === 'btn-all') {
+  if (attr(e.target, 'class') === 'btn-all')
     changeToAll({btnAll, btnActive, btnCompleted});
-    // refreshTodoListFromLocalStorage();
-  }
-  else if (attr(e.target, 'class') === 'btn-active') {
+  else if (attr(e.target, 'class') === 'btn-active')
     changeToActive({btnAll, btnActive, btnCompleted});
-    // refreshTodoListFromLocalStorage();
-  }
-  else if (attr(e.target, 'class') === 'btn-completed') {
+  else if (attr(e.target, 'class') === 'btn-completed')
     changeToCompleted({btnAll, btnActive, btnCompleted});
-    // refreshTodoListFromLocalStorage();
-  }
   else if (attr(e.target, 'class') === 'btn-clear-completed') {
     changeToAll({btnAll, btnActive, btnCompleted});
-    // refreshTodoListFromLocalStorage();
+    clearCompleted();
   }
-  // if (attr(e.target, 'class') === 'update-input')
-  // if (e.target.tagName === 'BUTTON')
-  //   deleteTodo(e.target.closest('li'));
-  // e.target.closest('li').remove();
+  renderTodoList();
+  renderTodoListMenuHandling();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -249,5 +215,11 @@ function changeToCompleted({btnAll, btnActive, btnCompleted}) {
   attr(btnActive, 'data-active', 'false');
   attr(btnCompleted, 'data-active', 'true');
   writeSeekState('completed');
+}
+
+function clearCompleted() {
+  const newTodoList = [...readTodoList().filter(item => item.type === 'active')];
+  writeTodoList(newTodoList);
+  localStorage.setItem('todoList', JSON.stringify(newTodoList));
 }
 
