@@ -165,7 +165,7 @@ function renderTodoListMenuHandling() {
       <button class="btn-all" data-active='${readSeekState() === 'all'}'>All</button>
       <button class="btn-active" data-active='${readSeekState() === 'active'}'>Active</button>
       <button class="btn-completed" data-active='${readSeekState() === 'completed'}'>Completed</button>
-      <button class="btn-clear-completed" data-active='false'>clear Completed</button>
+      <button class="btn-clear-completed" data-active='false'>Clear Completed</button>
     </div>
   `);
   // 이벤트 위임
