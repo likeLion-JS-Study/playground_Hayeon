@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { authService } from "../fBase";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newAccount, setnewAccount] = useState(true);
 
   // 여기서 name로 받으면 두개의 다른 onChange function을 만들 필요가 없다.
   // 심플하게 폼을 컨트롤 가능하다.
@@ -18,8 +20,22 @@ const Auth = () => {
       setPassword(value);
     }
   };
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      let data;
+      if (newAccount) {
+        data = await authService.createUserWithEmailAndPassword(
+          email,
+          password
+        );
+      } else {
+        data = await authService.signInWithEmailAndPassword(email, password);
+      }
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -28,7 +44,7 @@ const Auth = () => {
         {/* value 준 이유 : input값을 가져다 쓰기 위해서 */}
         <input
           name="email"
-          type="text"
+          type="email"
           placeholder="Email"
           required
           value={email}
@@ -42,7 +58,7 @@ const Auth = () => {
           value={password}
           onChange={onChange}
         />
-        <input type="submit" value="Log In" />
+        <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
       </form>
 
       <div>
