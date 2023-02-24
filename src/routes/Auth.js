@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { authService } from "../fBase";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newAccount, setnewAccount] = useState(true);
-
-  // 여기서 name로 받으면 두개의 다른 onChange function을 만들 필요가 없다.
-  // 심플하게 폼을 컨트롤 가능하다.
-  const onChange = (e) => {
-    //console.log(e.target.name);
+  const [newAccount, setNewAccount] = useState(true);
+  const onChange = (event) => {
     const {
       target: { name, value },
-    } = e;
-
+    } = event;
     if (name === "email") {
       setEmail(value);
     } else if (name === "password") {
@@ -24,24 +24,20 @@ const Auth = () => {
     event.preventDefault();
     try {
       let data;
+      const auth = getAuth();
       if (newAccount) {
-        data = await authService.createUserWithEmailAndPassword(
-          email,
-          password
-        );
+        data = await createUserWithEmailAndPassword(auth, email, password);
       } else {
-        data = await authService.signInWithEmailAndPassword(email, password);
+        data = await signInWithEmailAndPassword(auth, email, password);
       }
       console.log(data);
     } catch (error) {
       console.log(error);
     }
   };
-
   return (
     <div>
       <form onSubmit={onSubmit}>
-        {/* value 준 이유 : input값을 가져다 쓰기 위해서 */}
         <input
           name="email"
           type="email"
@@ -60,7 +56,6 @@ const Auth = () => {
         />
         <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
       </form>
-
       <div>
         <button>Continue with Google</button>
         <button>Continue with Github</button>
